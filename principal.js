@@ -1,35 +1,26 @@
 var titulo = document.querySelector (".titulo"); 
 titulo.textContent = "Financeiro Controle"; 
 
-var receita = document.querySelector ("#primeira-receita"); 
-var valor = receita.querySelector(".info-valor");
-var saldo = receita.querySelector (".info-saldo"); 
-saldo.textContent = valor.textContent; 
+var receitas = document.querySelectorAll(".receita");
 
-var receita2 = document.querySelector ("#segunda-receita"); 
-var valor2 = receita2.querySelector (".info-valor");    
-var saldo2 = receita2.querySelector (".info-saldo");  
-saldo2.textContent = parseFloat(valor.textContent) + parseFloat(valor2.textContent);  
+//var registro = 0; 
+var saldo = 0.0;
 
-var receita3 = document.querySelector ("#terceira-receita"); 
-var valor3 = receita3.querySelector (".info-valor"); 
-var saldo3 = receita3.querySelector (".info-saldo"); 
-saldo3.textContent = parseFloat(saldo2.textContent) + parseFloat(valor3.textContent); 
-
-var receita4 = document.querySelector ("#quarta-receita"); 
-var valor4 = receita4.querySelector (".info-valor"); 
-var saldo4 = receita4.querySelector (".info-saldo"); 
-saldo4.textContent = parseFloat(saldo3.textContent) + parseFloat(valor4.textContent);  
-
-var receita5 = document.querySelector ("#quinta-receita"); 
-var valor5 = receita5.querySelector (".info-valor"); 
-var saldo5 = receita5.querySelector (".info-saldo"); 
-saldo5.textContent = parseFloat(saldo4.textContent) + parseFloat(valor5.textContent);
-
-if (saldo5.textContent < 0) {
-    saldo5.style.color = "red";
+//while (registro < receitas.length){
+for(var registro = 0; registro < receitas.length; registro++) {
+    var receita = receitas [registro]; 
+    var tdValor = receita.querySelector(".info-valor");
+    var tdSaldo = receita.querySelector(".info-saldo"); 
+    var valor = parseFloat(tdValor.textContent);
+    saldo+=valor; 
+    tdSaldo.textContent = saldo.toFixed(2);
+    
+    if (saldo < 0) {
+        tdSaldo.classList.add("receita-negativa");
+    } 
+    //registro++;
 } 
- 
+
 
 var botao = document.querySelector("#adicionar-receita"); 
 botao.addEventListener("click", function(evento){
@@ -39,28 +30,84 @@ botao.addEventListener("click", function(evento){
     var categoria = form.categoria.value;
     var data = form.data.value; 
     var valor = parseFloat(form.valor.value); 
-    var erros = document.querySelector(".erros"); 
-    
+    var msgErros = document.querySelector(".erros"); 
+    var erros = [];
+
     limparErros(erros);
 
-    if (descricao.lenght <= 0){
-        erros.textContent += "A descrição é obrigatoria.\n"; 
+    if (descricao.length <= 0){
+        erros.push("A descrição é obrigatoria."); 
     } 
-    if (categoria.lenght <= 0){
-        erros.textContent += "A categoria é obrigatoria.\n"; 
+    if (categoria.length <= 0){
+        erros.push("A categoria é obrigatoria."); 
     } 
-    if (data.lenght <= 0){
-        erros.textContent += "A data é obrigatoria.\n"; 
+    if (data.length <= 0){
+        erros.push("A data é obrigatoria."); 
     } 
     if (isNaN(valor)) { 
-        erros.textContent += "O valor é obrigatório.\n"; 
+        erros.push("O valor é obrigatório."); 
     } else{
         if(valor == 0) { 
-            erros.textContent += "O valor deve ser diferente de zero (0).\n"; 
+            erros.push("O valor deve ser diferente de zero (0)."); 
         }
     } 
+
+    if (erros.length > 0) { 
+        limparErros(msgErros);
+        erros.forEach(function(erro){
+            var li = document.createElement("li");
+            li.textContent = erros[erro]; 
+            msgErros.appendChild(li);
+        })  
+    } 
+    var tabela = document.querySelector("tabela-receita"); 
+    var tr = document.createElement("tr"); 
+    var tdDescricao = document.createElement("td");
+    var tdCategoria = document.createElement("td");
+    var tdData = document.createElement("td");
+    var tdValor = document.createElement("td");
+    var tdSaldo = document.createElement("td");
+
+    
+    tdDescricao.textContent = descricao; 
+    tdDescricao.classList.add(".info-descricao");
+    tr.appendChild(tdDescricao); 
+
+    tdCategoria.textContent = categoria;
+    tdCategoria.classList.add(".info-categoria"); 
+    tr.appendChild(tdCategoria); 
+
+    tdData.textContent = data; 
+    tdData.classList.add(".info-data");
+    tr.appendChild(tdData); 
+
+    tdValor.textContent = valor; 
+    tdData.classList.add(".info-valor");
+    tr.appendChild(tdValor); 
+
+    var saldoAnterior = parseFloat(receitas[receitas.length - 1].querySelector(".info-saldo").textContent);
+    var saldo = saldoAnterior + valor; 
+    tdSaldo.textContent = saldo;
+    tdSaldo.classList.add(".info-saldo"); 
+    tr.appendChild(tdSaldo); 
+
+    if(saldo < 0) {
+        tdSaldo.classList.add("receita-negativa"); 
+    } else{
+        if(saldo > 0) {
+            tdSaldo.classList.add("receita-positiva");
+        }
+    }
+
+    tr.appendChild(tdSaldo); 
+
+
+    limparErros(erros);
+    formulario.reset();
+
 }); 
 
 function limparErros(erros) {
-    erros.ineerHTML = "";
-}
+    erros.innerHTML = "";
+};
+       
