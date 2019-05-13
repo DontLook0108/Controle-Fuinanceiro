@@ -33,7 +33,7 @@ botao.addEventListener("click", function(evento){
     var msgErros = document.querySelector(".erros"); 
     var erros = [];
 
-    limparErros(erros);
+    limparErros(erros); 
 
     if (descricao.length <= 0){
         erros.push("A descrição é obrigatoria."); 
@@ -50,8 +50,8 @@ botao.addEventListener("click", function(evento){
         if(valor == 0) { 
             erros.push("O valor deve ser diferente de zero (0)."); 
         }
-    } 
-
+    }
+    
     if (erros.length > 0) { 
         limparErros(msgErros);
         erros.forEach(function(erro){
